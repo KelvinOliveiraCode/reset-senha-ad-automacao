@@ -1,0 +1,23 @@
+[project]
+name = "reset-senha-ad-automacao"
+version = "0.1.0"
+description = "Automacao de reset de senha do Active Directory com geracao de ticket de suporte (Suporte TI)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+reset-senha-ad = "reset_senha_ad.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "S", "UP", "C4", "BLE"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
