@@ -1,99 +1,83 @@
 # reset-senha-ad-automacao
 
-Automacao de reset de senha do Active Directory com geracao de ticket de suporte — area Suporte TI.
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)   ![status: concluido](https://img.shields.io/badge/status-concluido-green)   ![licenca: MIT](https://img.shields.io/badge/licenca-MIT-blue)
 
-## Descricao / Description
+## Resumo
 
-**PT-BR:** Pacote PowerShell + Python que redefine a senha de um usuario no Active Directory (modulo ActiveDirectory) e gera um ticket de suporte numerado de forma sequencial e deterministica. Escopo do MVP: reset de senha + geracao de ticket.
+Projeto em Python desenvolvido como estudo de engenharia de software. Projeto funcional, reset-senha-ad-automacao
 
-**EN:** PowerShell + Python package that resets an Active Directory user password (ActiveDirectory module) and generates a numbered support ticket, sequentially and deterministically. MVP scope: password reset + ticket generation.
+## Problema / por que existe
 
-## Stack
+O projeto aborda um recorte pratico e automatiza uma tarefa que, feita manualmente, e repetitiva e propensa a erro. O foco esta em transformar dados ou processos em saida confiavel, com codigo legivel e testavel.
 
-PowerShell 5.1, Python 3.10+. Nenhuma dependencia externa.
+## Arquitetura
 
-## Como usar / How to use
+O codigo esta organizado por responsabilidade:
 
-### Pre-requisitos
+- Entrada: leitura de arquivo, API, entrada do usuario ou captura de dados (dependendo do modulo).
+- Processamento: funcoes puras ou classes que aplicam regras de negocio, transformacao ou analise sobre os dados de entrada.
+- Saida: gravacao de arquivo, impressao em terminal, resposta HTTP ou geracao de relatorio.
 
-- Windows com PowerShell 5.1 e o modulo ActiveDirectory (RSAT) instalado.
-- Permissao para redefinir senhas no AD.
+Quando aplicavel, a aplicacao separa a camada de acesso a dados da camada de logica de negocio, para que mudar a origem dos dados nao exija reescrever as regras.
 
-### Com o PowerShell (recomendado para uso direto no suporte)
+## Tecnologias
 
-**PT-BR:**
+- Python 3.x
+- (nenhum informado no repositorio)
 
-```
-.\src\Reset-SenhaAD.ps1 -Username jsilva -NewPassword "N0vaSenha123!"
-```
+- Sem CI configurado neste repositorio.
 
-Saída esperada:
+O repositorio contem testes automatizados.
 
-```
-SUCESSO: senha redefinida para jsilva
-TICKET: AD-jsilva-20261016-120000
-```
+## O que faz
 
-**EN:**
+Projeto funcional, reset-senha-ad-automacao
 
-```
-.\src\Reset-SenhaAD.ps1 -Username jsilva -NewPassword "N0vaSenha123!"
-```
+## Como rodar
 
-Expected output:
+Requisitos: Python 3.x instalado.
 
 ```
-SUCESSO: senha redefinida para jsilva
-TICKET: AD-jsilva-20261016-120000
+# instalar dependencias (se houver requirements.txt)
+pip install -r requirements.txt
+
+# executar
+python main.py
+
+# executar testes
+pytest
 ```
 
-### Com o Python (CLI)
+## Estrutura do projeto
+
+- src/ (7 arquivo(s))
+- tests/ (4 arquivo(s))
+- .gitignore, BRIEF.md, LICENSE, pyproject.toml, README.en.md, README.md
+
+
+## Trade-offs e decisões
+
+- Biblioteca padrao sempre que possivel, dependencias externas so quando o ganho justifica a manutencao.
+- Scripts executaveis direto, sem build step complexo, para facilitar a reproducao.
+- Logica separada de entrada/saida para manter as funcoes de processamento testaveis.
+
+## Limitações conhecidas
+
+- Escopo limitado ao recorte descrito; nao e uma plataforma completa.
+- Depende de Python 3.x no ambiente de execucao.
+
+
+## Testes
 
 ```
-uv run reset-senha-ad jsilva "N0vaSenha123!" --resolved-by suporte-ti
+pytest
 ```
 
-Ou instale o pacote no ambiente local:
+## Licença
 
-```
-pip install -e .
-reset-senha-ad jsilva "N0vaSenha123!"
-```
+Distribuído sob a licenca MIT. Consulte o arquivo `LICENSE` do repositorio.
 
-## Como rodar os testes / How to run tests
+## Autor
 
-```
-python -m ruff check . && python -m pytest -q
-```
-
-Resultado esperado: `8 passed`.
-
-## Estrutura do projeto / Project structure
-
-```
-reset-senha-ad-automacao/
-├── BRIEF.md
-├── LICENSE
-├── README.md
-├── pyproject.toml
-├── src/
-│   ├── Reset-SenhaAD.ps1     # script PowerShell: reset de senha no AD + ticket
-│   └── reset_senha_ad/
-│       ├── __init__.py
-│       ├── ad_client.py      # protocolo AdClient e implementacao PowerShell
-│       ├── cli.py            # linha de comando
-│       ├── models.py         # Ticket e ResetResult
-│       ├── orchestrator.py   # reset + ticket
-│       └── ticket.py         # geracao de tickets sequenciais
-└── tests/
-    ├── conftest.py
-    ├── test_ad_client.py
-    ├── test_orchestrator.py
-    └── test_ticket.py
-```
-
-## Licenca / License
-
-MIT License. Veja o arquivo `LICENSE`.
-
-Autor / Author: Kelvin Oliveira.
+Kelvin Oliveira, https://github.com/KelvinOliveiraCode
+Portfolio: https://kelvinoliveiracode.github.io/portfolio/
