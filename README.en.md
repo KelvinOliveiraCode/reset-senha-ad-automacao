@@ -1,118 +1,93 @@
 # reset-senha-ad-automacao
 
-<div align="center">
-
 **English** · [Português (Brasil)](README.md)
 
-</div>
-
-[![Python 3](https://img.shields.io/badge/Python-3.x-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/) [![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat-square&logo=scikit-learn)](https://scikit-learn.org/) [![pandas](https://img.shields.io/badge/pandas-150458?style=flat-square&logo=pandas)](https://pandas.pydata.org/) [![pytest](https://img.shields.io/badge/pytest-0A9EDC?style=flat-square&logo=pytest)](https://docs.pytest.org/) [![MIT License](https://img.shields.io/badge/License-MIT-f4c430?style=flat-square)](LICENSE)
-
-### Projeto funcional ,  reset-senha-ad-automacao
-
----
+[![Python 3](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](#) [![pytest](https://img.shields.io/badge/pytest-8%20tests-0A9EDC?style=flat-square&logo=pytest)](#) [![MIT License](https://img.shields.io/badge/License-MIT-f4c430?style=flat-square)](LICENSE)
 
 ## What it is
 
-Projeto funcional ,  reset-senha-ad-automacao
+**Active Directory password-reset automation**: a **Python CLI** that orchestrates resetting a user's password (via **PowerShell AD**, with a replaceable client) and **generates a support ticket** for every attempt — including failures, to keep the trail in the queue. It is an educational IT-support automation lab.
 
----
+## Status
 
-## Quick Start
+An educational lab, working and tested (8 tests).
 
-```bash
-# Clone and enter
-git clone https://github.com/KelvinOliveiraCode/<repo>.git
-cd <repo>
+## Features
 
-# Install dependencies
-# No requirements.txt detected
+- **Orchestrator** (`orchestrator.py`): `PasswordResetOrchestrator.reset(username, new_password)` — validates input, runs the reset and produces a `ResetResult`.
+- **AD client** (`ad_client.py`): the `AdClient` protocol + the `PowerShellAdClient` implementation (calls the `src/Reset-SenhaAD.ps1` script); injectable client for tests.
+- **Ticket** (`ticket.py`): `TicketGenerator.generate` creates a `Ticket` with an id and action (`password_reset`).
+- **CLI**: `reset-senha-ad <username> <new_password> [--resolved-by suporte-ti]`.
 
-# Run the project
-python main.py
+## Architecture
 
-# Run tests
-pytest
+A `reset_senha_ad` package with `orchestrator` (coordination), `ad_client` (AD integration via PowerShell), `ticket` (tracking), `models` (dataclasses) and `cli`. The real reset requires a Windows environment with the ActiveDirectory module; tests use a fake client.
+
+```mermaid
+flowchart LR
+    CLI[reset-senha-ad user pass] --> ORC[PasswordResetOrchestrator]
+    ORC --> AD[PowerShellAdClient - Reset-SenhaAD.ps1]
+    ORC --> TG[TicketGenerator]
+    AD --> RES[ResetResult]
+    TG --> TIC[Support ticket]
 ```
 
-## How it works
+## Stack
 
-Estrutura limpa e modular com separação de responsabilidades.
+- Python ≥ 3.10, stdlib only
+- PowerShell 5.1 + the ActiveDirectory module (for the real reset)
+- pytest (dev)
 
----
+## Repository layout
 
-## Capabilities
+```
+reset-senha-ad-automacao/
+├── pyproject.toml · BRIEF.md
+├── src/Reset-SenhaAD.ps1          # PowerShell script called by the client
+├── src/reset_senha_ad/
+│   ├── orchestrator.py  # reset + ticket coordination
+│   ├── ad_client.py     # protocol + PowerShell implementation
+│   ├── ticket.py · models.py · cli.py
+├── tests/               # 8 tests
+└── LICENSE              # MIT
+```
 
-| Capacidade | Descrição |
-|------------|-------------|
-| Carregamento de Dados | Auto-download do TensorFlow creditcard.csv (284k transações) com cache local |
-| EDA e Visualização | Distribuição de classes, histogramas de Amount, heatmaps de correlação (matplotlib/seaborn) |
-| Pré-processamento | RobustScaler em Amount/Time, split estratificado, remoção de duplicatas |
-| Balanceamento | SMOTE oversampling (fallback: class_weight="balanced") |
-| Modelagem | LogisticRegression, RandomForest, ExtraTrees com RandomizedSearchCV (StratifiedKFold) |
-| Métricas | Accuracy, Precision, Recall, F1, ROC AUC, Specificity, Confusion Matrix |
-| Seleção | Score ponderado: Recall 40% + F1 30% + Precision 20% + Accuracy 10% |
-| Persistência | Serialização joblib para modelo, scaler e resultados completos |
+## Prerequisites and installation
 
+```bash
+pip install -e .
+```
 
----
+## How to run
 
+```bash
+reset-senha-ad maria.silva "StrongNewPass!123" --resolved-by suporte-ti
+```
+The real reset requires being on a Windows domain with RSAT/ActiveDirectory installed.
 
+## Tests and quality
 
----
+Real command (verified by the agent):
 
-## FAQ
+```bash
+PYTHONPATH=src python -m pytest tests/
+# 8 passed
+```
 
-<details>
-<summary><strong>What is this project?</strong></summary>
+## Technical decisions and trade-offs
 
-A Python study/project demonstrating core concepts.
+- **AD client as an injectable Protocol**: testable without a real domain; the PowerShell implementation talks to AD for real.
+- **Ticket always generated** (even on failure): preserves the audit trail in the support queue.
 
-</details>
+## Known limitations and roadmap
 
-<details>
-<summary><strong>How do I run it?</strong></summary>
+- Does not validate the domain password policy before attempting.
+- No authentication of its own: whoever runs the CLI needs AD permission to reset passwords.
 
-See [Quick Start](#quick-start) for copy-paste commands.
+## Development process
 
-</details>
+An individual project by Kelvin Oliveira, built with orchestrated AI agents and reviewed by the author.
 
-<details>
-<summary><strong>Are there tests?</strong></summary>
+## License and author
 
-No automated tests in this repository.
-
-</details>
-
-<details>
-<summary><strong>Can I use this in production?</strong></summary>
-
-This is a **study/portfolio project**. Review and harden (auth, persistence, monitoring, etc.) before production use.
-
-</details>
-
-
-
----
-
-## Documentation
-
-- **Source Code** ,  Browse the `src/` directory for implementation details
-- **API Reference** ,  Inline docstrings + type hints
-- **Architecture Diagram** ,  See [architecture.mermaid](docs/architecture.mermaid) (if present)
-- **Changelog** ,  [CHANGELOG.md](CHANGELOG.md) (if present)
-- **Contributing** ,  [CONTRIBUTING.md](CONTRIBUTING.md) (if present)
-
-## License
-
-[MIT](LICENSE) ,  Kelvin Oliveira
-
----
-
-<div align="center">
-
-**Built with** · Python 3 + scikit-learn + pandas
-
-**Author** · [Kelvin Oliveira](https://github.com/KelvinOliveiraCode) · [Portfolio](https://kelvinoliveiracode.github.io/portfolio/)
-
-</div>
+MIT — Copyright (c) 2026 Kelvin Rebelo de Oliveira. Author: [Kelvin Oliveira](https://github.com/KelvinOliveiraCode) · [Portfolio](https://kelvinoliveiracode.github.io/portfolio/)
